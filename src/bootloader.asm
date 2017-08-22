@@ -7,10 +7,19 @@ bootloader:
 	mov sp, 4096		; Start stack pointer at 4096 (4k stack) (as our stack decreases)
 
 	mov si, our_text	; Put our string position into SI register
-	call print_string
+	call clear_screen
 
 	jmp $			; Keep jumping infinitely! ¯\_(ツ)_/¯
 	our_text db 'Hello!', 0	; Our dear string
+
+clear_screen:
+	mov ah, 0x07		; Tell BIOS to use clear/scrolldown function
+	mov al, 0x00		; Clear entire window
+	mov bh, 0x07		; White on black
+	mov cx, 0x00		; Specify top left as (0,0)
+	mov dh, 24		; 24 rows of characters
+	mov dl, 79		; 79 cols of characters
+	int 0x10
 
 print_string:
 	mov ah, 0x0E		; Tell BIOS to print character to TTY
